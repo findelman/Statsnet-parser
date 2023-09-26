@@ -1,9 +1,11 @@
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const cors = require("cors");
 
 const app = express();
 const port = 3000;
+app.use(cors());
 
 async function fetchData(url) {
   const response = await axios.get(url);
@@ -11,20 +13,15 @@ async function fetchData(url) {
 }
 
 async function extractData($, selector, replaceText = "") {
-    const header = $(selector);
-    const text = header
-      .parent()
-      .next()
-      .find("h4")
-      .text()
-      .trim();
-  
-    if (replaceText && text.includes(replaceText)) {
-      return text.replace(replaceText, ` ${replaceText}`);
-    }
-  
-    return text;
+  const header = $(selector);
+  const text = header.parent().next().find("h4").text().trim();
+
+  if (replaceText && text.includes(replaceText)) {
+    return text.replace(replaceText, ` ${replaceText}`);
   }
+
+  return text;
+}
 
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
@@ -38,21 +35,28 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     const companyDataUrl = `https://statsnet.co${companyURL}`;
     const $companyData = await fetchData(companyDataUrl);
     const dateRegistration = await extractData(
-        $companyData,
-        'h3:contains("Дата регистрации")',
-        "kgd.gov.kz"
-      );
-      
-      const fullName = await extractData(
-        $companyData,
-        'h3:contains("Полное наименование")',
-        "stat.gov.kz"
-      );
+      $companyData,
+      'h3:contains("Дата регистрации")',
+      "kgd.gov.kz"
+    );
 
+    const lastReRegistrationDate = await extractData(
+      $companyData,
+      'h3:contains("Дата последней перерегистрации")',
+      "kgd.gov.kz"
+    );
+
+    const fullName = await extractData(
+      $companyData,
+      'h3:contains("Полное наименование")',
+      "stat.gov.kz"
+    );
+
+    console.log()
     res.json({
-    //   companyURL,
+      //   companyURL,
       fullName,
-      dateRegistration,
+      dateRegistration: dateRegistration === "Неизвестна kgd.gov.kz" ? lastReRegistrationDate : dateRegistration,
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
