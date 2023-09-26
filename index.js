@@ -67,3 +67,6 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
+
+
+//  
