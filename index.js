@@ -37,8 +37,7 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 
     const browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath:
-        process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath),
+      executablePath: await chromium.executablePath(),
     });
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
