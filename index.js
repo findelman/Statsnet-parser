@@ -31,9 +31,6 @@ async function extractData(page, textToFind) {
   return null;
 }
 
-
-
-
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
     const iin = req.params.iin;
@@ -50,8 +47,10 @@ app.get("/api/getInfo/:iin", async (req, res) => {
         ignoreHTTPSErrors: true,
       };
     }
-  
-    const browser = await puppeteer.launch(options)
+
+    const browser = await puppeteer.launch({
+      ignoreDefaultArgs: ["--disable-extensions"],
+    });
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
 
