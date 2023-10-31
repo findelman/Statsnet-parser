@@ -50,6 +50,7 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 
     const browser = await puppeteer.launch({
       ignoreDefaultArgs: ["--disable-extensions"],
+      executablePath: await chrome.executablePath,
     });
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
