@@ -1,7 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const puppeteer = require("puppeteer-core");
-const edgeChromium  = require("chrome-aws-lambda");
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+  chrome = require("chrome-aws-lambda");
+  puppeteer = require("puppeteer-core");
+} else {
+  puppeteer = require("puppeteer");
+}
 const app = express();
 const port = 3000;
 app.use(cors());
@@ -16,7 +21,6 @@ async function extractData(page, textToFind) {
       );
       let date = await dateElement.evaluate((el) => el.textContent.trim());
 
-      // Добавляем пробел перед "stat.gov.kz"
       date = date.replace("stat.gov.kz", " stat.gov.kz");
 
       return date;
@@ -25,18 +29,29 @@ async function extractData(page, textToFind) {
   return null;
 }
 
+let chrome = {};
+let puppeteer;
+
+
+
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
 
-    const executablePath = await edgeChromium.executablePath || ''
+    let options = {};
+
+    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+      options = {
+        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: chrome.defaultViewport,
+        executablePath: await chrome.executablePath,
+        headless: true,
+        ignoreHTTPSErrors: true,
+      };
+    }
   
-    const browser = await puppeteer.launch({
-      executablePath,
-      args: edgeChromium.args,
-      headless: false,
-    })
+    const browser = await puppeteer.launch(options)
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
 
