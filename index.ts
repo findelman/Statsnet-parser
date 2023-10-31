@@ -1,34 +1,11 @@
-const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const cors = require("cors");
+import express = require("express");
+import cors = require("cors");
+import { fetchData } from "./helpers/fetchData";
+import { extractData } from "./helpers/extractData";
 
 const app = express();
 const port = 3000;
 app.use(cors());
-
-const axiosConfig = {
-  headers: {
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
-  },
-};
-
-async function fetchData(url) {
-  const response = await axios.get(url, axiosConfig);
-  return cheerio.load(response.data);
-}
-
-async function extractData($, selector, replaceText = "") {
-  const header = $(selector);
-  const text = header.parent().next().find("h4").text().trim();
-
-  if (replaceText && text.includes(replaceText)) {
-    return text.replace(replaceText, ` ${replaceText}`);
-  }
-
-  return text;
-}
 
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
@@ -59,7 +36,6 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     );
 
     res.json({
-      //   companyURL,
       fullName,
       dateRegistration:
         dateRegistration === "Неизвестна kgd.gov.kz"
@@ -75,4 +51,3 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
-
