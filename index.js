@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const puppeteer = require("puppeteer");
-
+const puppeteer = require("puppeteer-core");
+const edgeChromium  = require("chrome-aws-lambda");
 const app = express();
 const port = 3000;
 app.use(cors());
@@ -30,7 +30,13 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const executablePath = await edgeChromium.executablePath || ''
+  
+    const browser = await puppeteer.launch({
+      executablePath,
+      args: edgeChromium.args,
+      headless: false,
+    })
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
 
@@ -45,7 +51,6 @@ app.get("/api/getInfo/:iin", async (req, res) => {
       return res.status(404).json({ error: "Компания не найдена" });
     }
 
-    console.log(`https://statsnet.co${companyURL}`, "ALALALALALA");
     await page.goto(companyURL, { waitUntil: "domcontentloaded" });
 
     const fullName = await extractData(page, "Полное наименование");
