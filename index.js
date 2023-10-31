@@ -1,10 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-let chrome = {};
+const chromium = require("@sparticuz/chromium");
 let puppeteer;
 
 if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-  chrome = require("chrome-aws-lambda");
   puppeteer = require("puppeteer-core");
 } else {
   puppeteer = require("puppeteer");
@@ -36,21 +35,10 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
 
-    let options = {};
-
-    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-      options = {
-        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
-        defaultViewport: chrome.defaultViewport,
-        executablePath: await chrome.executablePath,
-        headless: true,
-        ignoreHTTPSErrors: true,
-      };
-    }
-
     const browser = await puppeteer.launch({
-      ignoreDefaultArgs: ["--disable-extensions"],
-      executablePath: await chrome.executablePath,
+      args: chromium.args,
+      executablePath:
+        process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath),
     });
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });

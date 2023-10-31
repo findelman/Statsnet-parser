@@ -3,6 +3,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@sparticuz/chromium": "^118.0.0",
     "axios": "^1.5.0",
     "cheerio": "^1.0.0-rc.12",
     "chrome-aws-lambda": "^10.1.0",
@@ -10,7 +11,7 @@
     "express": "^4.18.2",
     "nodemon": "^3.0.1",
     "puppeteer": "^21.4.1",
-    "puppeteer-core": "^21.4.1"
+    "puppeteer-core": "10.1.0"
   },
   "scripts": {
     "start": "nodemon index.js"
