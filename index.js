@@ -7,16 +7,17 @@ const port = 3000;
 app.use(cors());
 
 async function extractData(page, textToFind) {
-  const elements = await page.$$('tr.flex h3');
+  const elements = await page.$$("tr.flex h3");
   for (let element of elements) {
     const text = await element.evaluate((el) => el.textContent.trim());
     if (text === textToFind) {
-      const dateElement = await element
-        .evaluateHandle((el) => el.parentElement.nextElementSibling.querySelector('h4'));
+      const dateElement = await element.evaluateHandle((el) =>
+        el.parentElement.nextElementSibling.querySelector("h4")
+      );
       let date = await dateElement.evaluate((el) => el.textContent.trim());
-      
+
       // Добавляем пробел перед "stat.gov.kz"
-      date = date.replace('stat.gov.kz', ' stat.gov.kz');
+      date = date.replace("stat.gov.kz", " stat.gov.kz");
 
       return date;
     }
@@ -24,37 +25,45 @@ async function extractData(page, textToFind) {
   return null;
 }
 
-
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
-    
-    const browser = await puppeteer.launch({ headless: true });
+
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     await page.goto(searchURL, { waitUntil: "domcontentloaded" });
 
     await page.waitForSelector("a.text-statsnet");
-    const companyURL = await page.$eval("a.text-statsnet", (element) => element.href);
+    const companyURL = await page.$eval(
+      "a.text-statsnet",
+      (element) => element.href
+    );
 
     if (!companyURL) {
       await browser.close();
       return res.status(404).json({ error: "Компания не найдена" });
     }
 
-    console.log(`https://statsnet.co${companyURL}`, 'ALALALALALA');
+    console.log(`https://statsnet.co${companyURL}`, "ALALALALALA");
     await page.goto(companyURL, { waitUntil: "domcontentloaded" });
 
     const fullName = await extractData(page, "Полное наименование");
     const dateRegistration = await extractData(page, "Дата регистрации");
-    const lastReRegistrationDate = await extractData(page, "Дата последней перерегистрации");
+    const lastReRegistrationDate = await extractData(
+      page,
+      "Дата последней перерегистрации"
+    );
 
-    console.log(lastReRegistrationDate, dateRegistration)
+    console.log(lastReRegistrationDate, dateRegistration);
     await browser.close();
 
     res.json({
       fullName,
-      dateRegistration: dateRegistration === 'Неизвестнаkgd.gov.kz' ? lastReRegistrationDate : dateRegistration,
+      dateRegistration:
+        dateRegistration === "Неизвестнаkgd.gov.kz"
+          ? lastReRegistrationDate
+          : dateRegistration,
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
