@@ -40,7 +40,7 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 
     if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
       options = {
-        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security", '--font-render-hinting=none'],
         defaultViewport: chrome.defaultViewport,
         executablePath: await chrome.executablePath,
         headless: true,
