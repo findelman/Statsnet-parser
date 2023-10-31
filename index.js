@@ -7,8 +7,15 @@ const app = express();
 const port = 3000;
 app.use(cors());
 
+const axiosConfig = {
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+  },
+};
+
 async function fetchData(url) {
-  const response = await axios.get(url);
+  const response = await axios.get(url, axiosConfig);
   return cheerio.load(response.data);
 }
 
@@ -28,7 +35,6 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
     const $ = await fetchData(searchURL);
-
     const companyLink = $("a.text-statsnet");
     const companyURL = companyLink.attr("href");
 
@@ -52,11 +58,13 @@ app.get("/api/getInfo/:iin", async (req, res) => {
       "stat.gov.kz"
     );
 
-    console.log()
     res.json({
       //   companyURL,
       fullName,
-      dateRegistration: dateRegistration === "Неизвестна kgd.gov.kz" ? lastReRegistrationDate : dateRegistration,
+      dateRegistration:
+        dateRegistration === "Неизвестна kgd.gov.kz"
+          ? lastReRegistrationDate
+          : dateRegistration,
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
@@ -68,5 +76,3 @@ app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
 
-
-//  
