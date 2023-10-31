@@ -1,62 +1,60 @@
 const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
 const cors = require("cors");
+const puppeteer = require("puppeteer");
 
 const app = express();
 const port = 3000;
 app.use(cors());
 
-async function fetchData(url) {
-  const response = await axios.get(url);
-  return cheerio.load(response.data);
-}
+async function extractData(page, textToFind) {
+  const elements = await page.$$('tr.flex h3');
+  for (let element of elements) {
+    const text = await element.evaluate((el) => el.textContent.trim());
+    if (text === textToFind) {
+      const dateElement = await element
+        .evaluateHandle((el) => el.parentElement.nextElementSibling.querySelector('h4'));
+      let date = await dateElement.evaluate((el) => el.textContent.trim());
+      
+      // Добавляем пробел перед "stat.gov.kz"
+      date = date.replace('stat.gov.kz', ' stat.gov.kz');
 
-async function extractData($, selector, replaceText = "") {
-  const header = $(selector);
-  const text = header.parent().next().find("h4").text().trim();
-
-  if (replaceText && text.includes(replaceText)) {
-    return text.replace(replaceText, ` ${replaceText}`);
+      return date;
+    }
   }
-
-  return text;
+  return null;
 }
+
 
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
-    const $ = await fetchData(searchURL);
+    
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(searchURL, { waitUntil: "domcontentloaded" });
 
-    const companyLink = $("a.text-statsnet");
-    const companyURL = companyLink.attr("href");
+    await page.waitForSelector("a.text-statsnet");
+    const companyURL = await page.$eval("a.text-statsnet", (element) => element.href);
 
-    const companyDataUrl = `https://statsnet.co${companyURL}`;
-    const $companyData = await fetchData(companyDataUrl);
-    const dateRegistration = await extractData(
-      $companyData,
-      'h3:contains("Дата регистрации")',
-      "kgd.gov.kz"
-    );
+    if (!companyURL) {
+      await browser.close();
+      return res.status(404).json({ error: "Компания не найдена" });
+    }
 
-    const lastReRegistrationDate = await extractData(
-      $companyData,
-      'h3:contains("Дата последней перерегистрации")',
-      "kgd.gov.kz"
-    );
+    console.log(`https://statsnet.co${companyURL}`, 'ALALALALALA');
+    await page.goto(companyURL, { waitUntil: "domcontentloaded" });
 
-    const fullName = await extractData(
-      $companyData,
-      'h3:contains("Полное наименование")',
-      "stat.gov.kz"
-    );
+    const fullName = await extractData(page, "Полное наименование");
+    const dateRegistration = await extractData(page, "Дата регистрации");
+    const lastReRegistrationDate = await extractData(page, "Дата последней перерегистрации");
 
-    console.log()
+    console.log(lastReRegistrationDate, dateRegistration)
+    await browser.close();
+
     res.json({
-      //   companyURL,
       fullName,
-      dateRegistration: dateRegistration === "Неизвестна kgd.gov.kz" ? lastReRegistrationDate : dateRegistration,
+      dateRegistration: dateRegistration === 'Неизвестнаkgd.gov.kz' ? lastReRegistrationDate : dateRegistration,
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
@@ -67,6 +65,3 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
-
-
-//  
