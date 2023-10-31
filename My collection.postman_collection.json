@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "23fc71b4-2b83-44a8-a922-da2884cd7c74",
+		"name": "My collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23301014",
+		"_collection_link": "https://crimson-firefly-715513.postman.co/workspace/My-Workspace~f95dc946-6d9d-49c0-8c66-589442d3422a/collection/23301014-23fc71b4-2b83-44a8-a922-da2884cd7c74?action=share&source=collection_link&creator=23301014"
+	},
+	"item": [
+		{
+			"name": "statsnet",
+			"item": [
+				{
+					"name": "search",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Request-Id",
+								"value": "ed8d7ed4-1a04-44ef-bb80-609752ca89b6",
+								"type": "text"
+							},
+							{
+								"key": "X-Sum",
+								"value": "81fbb0df007656f27e43ad9934e2f5b6",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"query\": \"651207300012\",\r\n    \"filters\": {\r\n        \"jurisdiction\": [\r\n            \"kz\"\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://statsnet.co/api/v1/companies/search?limit=5",
+							"protocol": "https",
+							"host": [
+								"statsnet",
+								"co"
+							],
+							"path": [
+								"api",
+								"v1",
+								"companies",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "companies",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Request-Id",
+								"value": "ed8d7ed4-1a04-44ef-bb80-609752ca89b6",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "X-Sum",
+								"value": "81fbb0df007656f27e43ad9934e2f5b6",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://bccgov.vercel.app/api/getInfo/830506300033",
+							"protocol": "https",
+							"host": [
+								"bccgov",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"getInfo",
+								"830506300033"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "party services",
+			"item": [
+				{
+					"name": "kgd gov / data",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Host",
+								"value": "kgd.gov.kz",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, text/javascript, */*; q=0.01",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Referer",
+								"value": "https://kgd.gov.kz/ru/services/taxpayer_search",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Origin",
+								"value": "https://kgd.gov.kz",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Chromium\";v=\"116\", \"Not)A;Brand\";v=\"24\", \"Google Chrome\";v=\"116\"",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\"",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded; charset=UTF-8",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Length",
+								"value": "19883",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Cookie",
+								"value": " cookiesession1=678B76C19B3063E4C67AD1AD6ABEF5C8; _zero_cc=3fe1e97fb421b2; has_js=1; kgd_spec_version=normal; kgd_spec_color=c1; kgd_spec_fontsize=font-small; kgd_spec_img=imageson; _zero_ss=65133663f7bd4.1695757924.1695757924.1",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "uin",
+									"value": "871207302758",
+									"type": "text"
+								},
+								{
+									"key": "captcha_sid",
+									"value": "289954092",
+									"type": "text"
+								},
+								{
+									"key": "captcha_token",
+									"value": "2afc88be1e2e3ecaac483452f0426543",
+									"type": "text"
+								},
+								{
+									"key": "captcha_response",
+									"value": "Google no captcha",
+									"type": "text"
+								},
+								{
+									"key": "g-recaptcha-response",
+									"value": "03AFcWeA4h-AxCT-6SYn13eJSvJhH4yvLnQA9RxQByALyt3XlpCVPvfhBP2cTco8GHetQSxUzYkQdFtJaB6OegMWNBHutzNgBMzHpUoHyTD1saFbFCpCaWtB8w2iKrOOxmtyMVBlH3nN0qRcQZYSyyswdJAEpA2Z4oIQyGkwbcruyelNKy4l7b8xJJkF9T2-CDAhAUY_edgBB7hBokzX1U4cVOeiSDdvwjiy2-rtG5jZbFZW4yci8oF1glU0810yW1JAQXHkr5R5j2sW1PBdh_BKT2UpgZfJ9KsaRegs_4vu0qy-Ce7mFl1nVODpq4nyJDTw0JrM77RY8LLXeThumGnfkU8yTMhFPRBQlOhCA4pCZp2dotS4adVd0toBQ_miFnKuZfY7o7JPu22zjGjskP_QPr948Rhtfk3Hzs9u92LAJxcxJCo7Dic0cuBnD-LH9f8OE0JjPZYfl0BYSN6yGm4er2B89qJqfrl6pmHb8Yt_9v7tL6l4vIbTPIG6RlodXjdIUi_AAXhWeiw7cJwpSNh5uCKZ5tCNbSSBfb5Zufm8-zEAZBngidEbk",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://kgd.gov.kz/ru/system/ajax",
+							"protocol": "https",
+							"host": [
+								"kgd",
+								"gov",
+								"kz"
+							],
+							"path": [
+								"ru",
+								"system",
+								"ajax"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adata / get info",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Request-Id",
+								"value": "ed8d7ed4-1a04-44ef-bb80-609752ca89b6",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "X-Sum",
+								"value": "81fbb0df007656f27e43ad9934e2f5b6",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://pk-api.adata.kz/api/v1/data/company/reg-date/short/?id=200740017338",
+							"protocol": "https",
+							"host": [
+								"pk-api",
+								"adata",
+								"kz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"company",
+								"reg-date",
+								"short",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "200740017338"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "getInfo - my service Copy",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Request-Id",
+						"value": "ed8d7ed4-1a04-44ef-bb80-609752ca89b6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Sum",
+						"value": "81fbb0df007656f27e43ad9934e2f5b6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/getInfo/830506300033",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"getInfo",
+						"830506300033"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getInfo",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Request-Id",
+						"value": "ed8d7ed4-1a04-44ef-bb80-609752ca89b6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-Sum",
+						"value": "81fbb0df007656f27e43ad9934e2f5b6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/getInfo/840809450818",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"getInfo",
+						"840809450818"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
