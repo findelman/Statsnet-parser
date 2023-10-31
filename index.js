@@ -1,74 +1,68 @@
 const express = require("express");
+const axios = require("axios");
+const cheerio = require("cheerio");
 const cors = require("cors");
-const chromium = require("@sparticuz/chromium");
-let puppeteer;
 
-if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-  puppeteer = require("puppeteer-core");
-} else {
-  puppeteer = require("puppeteer");
-}
 const app = express();
 const port = 3000;
 app.use(cors());
 
-async function extractData(page, textToFind) {
-  const elements = await page.$$("tr.flex h3");
-  for (let element of elements) {
-    const text = await element.evaluate((el) => el.textContent.trim());
-    if (text === textToFind) {
-      const dateElement = await element.evaluateHandle((el) =>
-        el.parentElement.nextElementSibling.querySelector("h4")
-      );
-      let date = await dateElement.evaluate((el) => el.textContent.trim());
+const axiosConfig = {
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+  },
+};
 
-      date = date.replace("stat.gov.kz", " stat.gov.kz");
+async function fetchData(url) {
+  const response = await axios.get(url, axiosConfig);
+  return cheerio.load(response.data);
+}
 
-      return date;
-    }
+async function extractData($, selector, replaceText = "") {
+  const header = $(selector);
+  const text = header.parent().next().find("h4").text().trim();
+
+  if (replaceText && text.includes(replaceText)) {
+    return text.replace(replaceText, ` ${replaceText}`);
   }
-  return null;
+
+  return text;
 }
 
 app.get("/api/getInfo/:iin", async (req, res) => {
   try {
     const iin = req.params.iin;
     const searchURL = `https://statsnet.co/search/kz/${iin}`;
+    const $ = await fetchData(searchURL);
+    const companyLink = $("a.text-statsnet");
+    const companyURL = companyLink.attr("href");
 
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath(),
-    });
-    const page = await browser.newPage();
-    await page.goto(searchURL, { waitUntil: "domcontentloaded" });
-
-    await page.waitForSelector("a.text-statsnet");
-    const companyURL = await page.$eval(
-      "a.text-statsnet",
-      (element) => element.href
+    const companyDataUrl = `https://statsnet.co${companyURL}`;
+    const $companyData = await fetchData(companyDataUrl);
+    const dateRegistration = await extractData(
+      $companyData,
+      'h3:contains("Дата регистрации")',
+      "kgd.gov.kz"
     );
 
-    if (!companyURL) {
-      await browser.close();
-      return res.status(404).json({ error: "Компания не найдена" });
-    }
-
-    await page.goto(companyURL, { waitUntil: "domcontentloaded" });
-
-    const fullName = await extractData(page, "Полное наименование");
-    const dateRegistration = await extractData(page, "Дата регистрации");
     const lastReRegistrationDate = await extractData(
-      page,
-      "Дата последней перерегистрации"
+      $companyData,
+      'h3:contains("Дата последней перерегистрации")',
+      "kgd.gov.kz"
     );
 
-    console.log(lastReRegistrationDate, dateRegistration);
-    await browser.close();
+    const fullName = await extractData(
+      $companyData,
+      'h3:contains("Полное наименование")',
+      "stat.gov.kz"
+    );
 
     res.json({
+      //   companyURL,
       fullName,
       dateRegistration:
-        dateRegistration === "Неизвестнаkgd.gov.kz"
+        dateRegistration === "Неизвестна kgd.gov.kz"
           ? lastReRegistrationDate
           : dateRegistration,
     });
@@ -81,3 +75,4 @@ app.get("/api/getInfo/:iin", async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
+
