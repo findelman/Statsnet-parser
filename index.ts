@@ -44,7 +44,7 @@ app.get("/api/getInfo/:iin", async (req, res) => {
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
-    res.status(200).json({ fullName: null, dateRegistration: null });
+    res.status(500).json({ error: "Ошибка при получении данных" });
   }
 });
 
