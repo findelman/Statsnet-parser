@@ -35,12 +35,16 @@ app.get("/api/getInfo/:iin", async (req, res) => {
       "stat.gov.kz"
     );
 
+    const resultDate =
+      dateRegistration === "Неизвестна kgd.gov.kz"
+        ? lastReRegistrationDate === "Неизвестна"
+          ? null
+          : lastReRegistrationDate
+        : dateRegistration;
+
     res.json({
       fullName,
-      dateRegistration:
-        dateRegistration === "Неизвестна kgd.gov.kz"
-          ? lastReRegistrationDate
-          : dateRegistration,
+      dateRegistration: resultDate,
     });
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
@@ -52,5 +56,4 @@ app.listen(port, () => {
   console.log(`Сервер запущен на порту ${port}`);
 });
 
-
-// test 
+// test
