@@ -12,7 +12,7 @@ router.get("/new-getInfo/:iin", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("Ошибка при парсинге данных:", error);
-    res.status(500).json({
+    res.status(200).json({
       fullName: null,
       dateRegistration: null,
     });
